@@ -1,0 +1,63 @@
+---
+title: "plot"
+author: "Evelyn Yi Tsing Ng"
+date: "2024-12-04"
+output: html_document
+---
+```{r}
+data <- read.csv("astronaut.csv")
+```
+```{r}
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+long_data <- data %>%
+  pivot_longer(cols = c(MRD1..R.Avg..E., MRD1..R.Avg..S., MRD1..L.Avg..E., MRD1..L.Avg..S.,
+                        PTB.R..E..Avg, PTB.R..S..Avg, PTB.L..E..Avg, PTB.L..S..Avg),
+               names_to = "Measurement", values_to = "Value") %>%
+  mutate(
+    Eye = case_when(grepl("R", Measurement) ~ "Right Eye",
+                    grepl("L", Measurement) ~ "Left Eye"),
+    Environment = case_when(grepl("E", Measurement) ~ "Earth",
+                            grepl("S", Measurement) ~ "Space")) %>%
+  mutate(Measurement = gsub("\\.E\\.|\\.S\\.", "", Measurement))
+
+ggplot(long_data, aes(x = Environment, y = Value, fill = Environment)) +
+  geom_boxplot() +
+  facet_grid(. ~ Measurement) +  
+  labs(title = "Comparison of MRD and PTB for Left and Right Eyes Between Environments",
+       x = "Environment", y = "Measurement Value") +
+   theme_minimal() 
+```
+
+For mRD1, the measurement for both left and right eyes are similar. 
+For PTB, the measurement for both left and right eyes are significantly higher than those on Earth. There is also more variability in Space, particularly for the right eye, as there are outliers.
+
+We conclude that the environment impacts PTB more prominently than MRD. Morover, Space increases PTB measurements, with greater variability and higher medians compared to Earth.
+
+```{r}
+library(tidyr)
+library(dplyr)
+data1 <- read.csv("astronaut1.csv")
+data2 <- data1 %>% 
+  separate(col = "Name.Date", into = c("Name", "Year"), sep = "/'") %>% 
+  filter(Name == "Akers") %>%
+  mutate(
+    Year = paste0("19", Year),
+    X = gsub("[0-9]", "", X)
+    ) %>%
+    pivot_longer(
+    cols = c("MRD1.R", "PTB.R", "MRD1.L", "PTB.L"),
+    names_to = "Measurement",
+    values_to = "Value"
+  )
+
+ggplot(data2, aes(x = Year, y = Value, color = Measurement, group = Measurement)) +
+  geom_point() +
+  geom_line(aes(group = Measurement)) +
+  labs(title = "Trend Comparison of Eye Measurement for Akers", x = "Year", y = "Measurement Values")
+```
+
+MRD (L & R): The trends for both left and right MRD measurements are similar, showing an overall increase when moving from Earth to space. 
+
+PTB (L & R): The PTB trends for both sides are also similar. They show an initial increase when transitioning from Earth to space, but this is followed by a decrease at various points. 
