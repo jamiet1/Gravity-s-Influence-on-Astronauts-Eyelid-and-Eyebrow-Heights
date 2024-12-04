@@ -1,0 +1,28 @@
+---
+title: "Correlation Analysis"
+author: "Jamie Tian"
+date: "12/04/2024"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+data2 <- read_excel("NASA_Astronaut2-6-2020.xlsx", sheet = 2) 
+# Extract MRD and PTB columns
+earth_data <- data2[, c("MRD1- R Avg (E)", "MRD1- L Avg (E)", "PTB R (E) Avg", "PTB L (E) Avg")]
+space_data <- data2[, c("MRD1- R Avg (S)", "MRD1- L Avg (S)", "PTB R (S) Avg", "PTB L (S) Avg")]
+colnames(earth_data) <- c("MRD_R", "MRD_L", "PTB_R", "PTB_L")
+colnames(space_data) <- c("MRD_R", "MRD_L", "PTB_R", "PTB_L")
+# Pearson correlations
+cor_earth <- cor(earth_data, use = "complete.obs", method = "pearson")
+cor_space <- cor(space_data, use = "complete.obs", method = "pearson")
+# Correlation matrices
+cat("Correlation matrix for Earth:\n")
+print(cor_earth)
+cat("\nCorrelation matrix for Space:\n")
+print(cor_space)
+```
