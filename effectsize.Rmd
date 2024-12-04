@@ -1,0 +1,48 @@
+---
+title: "effect size final project"
+author: "yangsheng xu"
+date: "2024-12-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(readxl)
+
+data2 <- read_excel("NASA_Astronaut2-6-2020.xlsx", sheet = 2) 
+
+t_test_MRD1_R <- t.test(data2$`MRD1- R Avg (E)`, data2$`MRD1- R Avg (S)`, paired = TRUE) 
+t_test_MRD1_L <- t.test(data2$`MRD1- L Avg (E)`, data2$`MRD1- L Avg (S)`, paired = TRUE) 
+t_test_PTB_R <- t.test(data2$`PTB R (E) Avg`, data2$`PTB R (S) Avg`, paired = TRUE) 
+t_test_PTB_L <- t.test(data2$`PTB L (E) Avg`, data2$`PTB L (S) Avg`, paired = TRUE) 
+
+
+
+```
+
+```{r}
+library(effectsize)
+
+effect_size_MRD1_R <- cohens_d(data2$`MRD1- R Avg (E)`, data2$`MRD1- R Avg (S)`, paired = TRUE)
+effect_size_MRD1_L <- cohens_d(data2$`MRD1- L Avg (E)`, data2$`MRD1- L Avg (S)`, paired = TRUE)
+effect_size_PTB_R <- cohens_d(data2$`PTB R (E) Avg`, data2$`PTB R (S) Avg`, paired = TRUE)
+effect_size_PTB_L <- cohens_d(data2$`PTB L (E) Avg`, data2$`PTB L (S) Avg`, paired = TRUE)
+
+print(effect_size_MRD1_R)
+print(effect_size_MRD1_L)
+print(effect_size_PTB_R)
+print(effect_size_PTB_L)
+
+
+
+```
+
+#Result Analysis:   
+The effect size analysis highlights significant findings regarding the impact of microgravity on astronauts' facial anatomy. For eyelid position, measured as Margin to Reflex Distance (MRD), the results show small effect sizes for both the right eye (d=0.25, 95% CI: [-0.22, 0.72]) and the left eye ( d=0.23, 95% CI: [-0.24, 0.69]). These small effect sizes indicate minimal practical differences between MRD measurements on Earth and in space. The confidence intervals for both eyes include zero, suggesting that the differences are not statistically significant. This finding aligns with the high p-values observed in the paired t-tests (p=0.301 and p=0.3502), supporting the conclusion that gravity has little to no influence on the position of the eyelids. This stability may result from the robust anatomical and functional structures that support the eyelid, which are less sensitive to gravitational forces.    
+
+In contrast, the results for eyebrow position, measured as Pupil to Bottom of Brow (PTB), reveal a strong and significant effect of gravity. For the right eye, the effect size is large (d=-3.00, 95% CI: [-4.09, -1.89]), and a similarly large effect size is observed for the left eye (d= -2.69, 95% CI: [-3.69, -1.67]). These negative effect sizes indicate that eyebrow height is significantly lower on Earth compared to space, reflecting the downward pull of gravity. The 95% confidence intervals do not include zero, and the extremely low p-values (p<0.0001) from the paired t-tests further confirm the statistical significance of these differences. These findings suggest that microgravity allows soft tissues and muscles in the brow region to relax, leading to higher eyebrow positions in space.     
+
+#Implication:   
+ The stability of eyelid position under different gravitational conditions suggests that eyelid-supporting structures are anatomically resilient, with limited susceptibility to environmental changes. On the other hand, the substantial impact of gravity on eyebrow positioning highlights the need for adjustments in helmet and equipment design to accommodate changes in facial anatomy during space missions. Additionally, PTB measurements could serve as a reliable, non-invasive metric for monitoring astronauts' adaptation to microgravity. Beyond the realm of space exploration, these results may contribute to medical fields such as ophthalmology and plastic surgery by improving our understanding of how gravity influences soft tissues and facial anatomy.    
