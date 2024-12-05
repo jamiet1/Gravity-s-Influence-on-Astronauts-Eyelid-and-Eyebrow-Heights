@@ -30,22 +30,22 @@ This dataset can be found here: https://ucla.app.box.com/s/sn7lystvokoqllft2mk55
 
 ## Methods
 - **Data Cleaning**:
-  - Renamed columns for consistency.
-  - Split the "Name/Date" column into separate fields.
+  - Used a cleaneddataset with splitted names and dates, and no NA value, ensuring consistency in column names.
 - **Statistical Analysis**:
   - Paired t-tests for comparing mean measurements.
   - Correlation analysis for eyelid and eyebrow changes.
 - **Visualization**:
-  - Boxplots, violin plots, and heatmaps for visual comparisons.
+  - Boxplots, bar plots, dot plots, and line plots for visual comparisons.
 
 ## Results
-- **Eyelid Height**: Decreased by 0.6 mm on average in space.
-- **Eyebrow Height**: Decreased by 0.8 mm on average in space.
-- **Correlation**: Moderate positive correlation (r = 0.58, p < 0.01).
+- **Individual Variability**: Astronauts' facial features respond differently to microgravity, with varying degrees of change observed.
+- **Environmental Influence**: Gravity significantly affects the relationship between eyelid and eyebrow positions, with distinct differences between Earth and space.
+- **Microgravity-Induced Changes**: Increased variability in facial measurements in space suggests microgravity impacts astronauts' facial anatomy over time.
 
 ## Challenges
-- **Column Naming**: Ensured consistency across datasets.
-- **Data Cleaning**: Split combined columns for better usability.
+- **Small Sample Size:**: There is a limit on the generalization of findings to the broader astronaut population.
+- **Uncontrolled Confounding Variables**: Factors such as age were not explicitly adjusted for in the analysis, which may influence results. 
+- **Measurement Variability**: Potential inconsistencies in data collection methods. 
 
 ## How to Run
 1. Clone this repository:
