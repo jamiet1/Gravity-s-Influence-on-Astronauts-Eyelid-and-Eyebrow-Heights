@@ -3,14 +3,14 @@
 ## Overview
 This project investigates how gravity impacts astronauts' eyelid and eyebrow heights by comparing measurements taken on Earth and in space. The findings provide insights into human adaptation to microgravity, which is critical for astronaut health during long-term space missions.
 
+The full poster can be found here: https://www.overleaf.com/read/jpsxdwbczjvw#3d4a8a 
+
 ## Dataset
 The dataset used in this study is **NASA_Astronaut2-6-2020.xlsx** from the Jules Stein Eye Institute, containing:
 - Eyelid and eyebrow measurements on Earth and in space.
 - Measurement metrics (e.g., MRD1-L, PTB-L).
 
 This dataset can be found here: https://ucla.app.box.com/s/sn7lystvokoqllft2mk55d6yyt19hehi/folder/292096583155
-
-The full poster can be found here: https://www.overleaf.com/read/jpsxdwbczjvw#3d4a8a 
 
 ## Objectives
 1. Compare eyelid heights between Earth and space.
