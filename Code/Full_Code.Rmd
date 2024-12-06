@@ -1,0 +1,210 @@
+---
+title: "140_FinalProject_Code"
+author: "Qianping Wu"
+date: "2024-12-05"
+output: pdf_document
+---
+```{r, message=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(tidyverse)
+
+# Load the data
+data <- read_excel("NASA_Astronaut2-6-2020.xlsx", sheet = 2)
+sheet1 <- read_excel("NASA_Astronaut2-6-2020.xlsx", sheet =1)
+# head(data)
+# colnames(data)
+```
+
+\pagebreak 
+
+# Paired t-Tests:  Katherine Jin		
+
+```{r}
+# Perform paired t-tests 
+t_test_MRD1_R <- t.test(data$`MRD1- R Avg (E)`, data$`MRD1- R Avg (S)`, paired = TRUE) 
+t_test_MRD1_L <- t.test(data$`MRD1- L Avg (E)`, data$`MRD1- L Avg (S)`, paired = TRUE) 
+t_test_PTB_R <- t.test(data$`PTB R (E) Avg`, data$`PTB R (S) Avg`, paired = TRUE) 
+t_test_PTB_L <- t.test(data$`PTB L (E) Avg`, data$`PTB L (S) Avg`, paired = TRUE) 
+# Print the results 
+print(t_test_MRD1_R) 
+print(t_test_MRD1_L) 
+print(t_test_PTB_R) 
+print(t_test_PTB_L)
+```
+\pagebreak 
+
+# Correlation Analysis: Jamie Tian	
+
+```{r}
+# Extract MRD and PTB columns
+earth_data <- data[, c("MRD1- R Avg (E)", "MRD1- L Avg (E)", "PTB R (E) Avg", "PTB L (E) Avg")]
+space_data <- data[, c("MRD1- R Avg (S)", "MRD1- L Avg (S)", "PTB R (S) Avg", "PTB L (S) Avg")]
+colnames(earth_data) <- c("MRD_R", "MRD_L", "PTB_R", "PTB_L")
+colnames(space_data) <- c("MRD_R", "MRD_L", "PTB_R", "PTB_L")
+# Pearson correlations
+cor_earth <- cor(earth_data, use = "complete.obs", method = "pearson")
+cor_space <- cor(space_data, use = "complete.obs", method = "pearson")
+# Correlation matrices
+cat("Correlation matrix for Earth:\n")
+print(cor_earth)
+cat("\nCorrelation matrix for Space:\n")
+print(cor_space)
+```
+
+\pagebreak 
+
+# Visualization 
+
+# Barplot, scatterplot: Qianping Wu
+```{r}
+# Bar Plot for MRD1 Right Eye Avg (Earth vs. Space)
+ggplot(data) +
+  geom_bar(aes(x = Astronaut, y = `MRD1- R Avg (E)`, fill = "Earth"), 
+           stat = "identity", position = "dodge", alpha = 0.7) +
+  geom_bar(aes(x = Astronaut, y = `MRD1- R Avg (S)`, fill = "Space"), 
+           stat = "identity", position = "dodge", alpha = 0.7) +
+  labs(title = "MRD1 Right Eye Avg Comparison: Earth vs. Space",
+       x = "Astronaut",
+       y = "MRD1 Right Eye Average",
+       fill = "Environment") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+
+# Scatter Plot for Correlation Between MRD1 Right Eye Avg and PTB Right Eye Avg (Earth vs Space)
+data_earth <- data %>%
+  select(Astronaut, `MRD1- R Avg (E)`, `PTB R (E) Avg`) %>%
+  rename(MRD1_R = `MRD1- R Avg (E)`, PTB_R = `PTB R (E) Avg`) %>%
+  mutate(Environment = "Earth")
+
+data_space <- data %>%
+  select(Astronaut, `MRD1- R Avg (S)`, `PTB R (S) Avg`) %>%
+  rename(MRD1_R = `MRD1- R Avg (S)`, PTB_R = `PTB R (S) Avg`) %>%
+  mutate(Environment = "Space")
+
+data_combined <- bind_rows(data_earth, data_space)
+
+ggplot(data_combined, aes(x = MRD1_R, y = PTB_R, color = Environment)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, aes(color = Environment)) +
+  labs(title = "Correlation Between MRD1 Right Eye Avg and PTB Right Eye Avg (Earth vs Space)",
+       x = "MRD1 Right Eye Average",
+       y = "PTB Right Eye Average") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 10)
+  ) +
+  scale_color_manual(values = c("Earth" = "blue", "Space" = "red"))
+```
+
+\pagebreak 
+
+# Boxplot, line plot: Evelyn Yi Tsing Ng
+
+```{r, warning=FALSE}
+long_data <- data %>%
+  pivot_longer(cols = c("MRD1- R Avg (E)", "MRD1- R Avg (S)", "MRD1- L Avg (E)", "MRD1- L Avg (S)", "PTB R (E) Avg", "PTB R (S) Avg", "PTB L (E) Avg", "PTB L (S) Avg"),
+               names_to = "Measurement", values_to = "Value") %>%
+  mutate(
+    Eye = case_when(grepl("R", Measurement) ~ "Right Eye",
+                    grepl("L", Measurement) ~ "Left Eye"),
+    Environment = case_when(grepl("E", Measurement) ~ "Earth",
+                            grepl("S", Measurement) ~ "Space")) %>%
+  mutate(Measurement = gsub("\\(E\\)|\\(S\\)", "", Measurement))
+
+ggplot(long_data, aes(x = Environment, y = Value, fill = Environment)) +
+  geom_boxplot() +
+  facet_grid(. ~ Measurement) +  
+  labs(title = "Comparison of MRD and PTB for Left and Right Eyes Between Environments",
+       x = "Environment", y = "Measurement Value") +
+  theme_minimal() 
+
+data2 <- sheet1 %>% 
+  separate(col = "Name/Date", into = c("Name", "Year"), sep = "/'") %>% 
+  filter(Name == "Akers") %>%
+  mutate(
+    Year = paste0("19", Year),
+    X = gsub("[0-9]", "", ...1), 
+     Environment = case_when(
+      grepl("Earth", X, ignore.case = TRUE) ~ "Earth", 
+      grepl("Space", X, ignore.case = TRUE) ~ "Space"   
+    )
+    ) %>%
+    pivot_longer(
+    cols = c("MRD1-R", "PTB-R", "MRD1-L", "PTB-L"),
+    names_to = "Measurement",
+    values_to = "Value"
+  )
+
+ggplot(data2, aes(x = Year, y = Value, group = Measurement)) +
+  geom_point(aes(color = Environment), size = 3) + 
+  geom_line(color = "black") +
+  facet_wrap(~ Measurement, ncol = 1, scales = "free_y") + 
+  labs(
+    title = "Trend Comparison of Eye Measurements for Akers",
+    x = "Year",
+    y = "Eye Measurements"
+  )
+```
+
+\pagebreak 
+
+# Variability Analysis: Xuanang Li	
+
+```{r}
+# Calculate standard deviation and range for MRD and PTB columns
+mrd_columns <- c("MRD1-R", "MRD1-L")
+ptb_columns <- c("PTB-R", "PTB-L")
+
+# Define a function to calculate range
+calc_range <- function(x) {
+  return(max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+}
+
+# Calculations for MRD
+mrd_std <- sapply(sheet1[mrd_columns], sd, na.rm = TRUE)
+mrd_range <- sapply(sheet1[mrd_columns], calc_range)
+
+# Calculations for PTB
+ptb_std <- sapply(sheet1[ptb_columns], sd, na.rm = TRUE)
+ptb_range <- sapply(sheet1[ptb_columns], calc_range)
+
+# Combine results into a data frame
+variability_stats <- data.frame(
+  Metric = c("Standard Deviation", "Range"),
+  MRD_R = c(mrd_std["MRD1-R"], mrd_range["MRD1-R"]),
+  MRD_L = c(mrd_std["MRD1-L"], mrd_range["MRD1-L"]),
+  PTB_R = c(ptb_std["PTB-R"], ptb_range["PTB-R"]),
+  PTB_L = c(ptb_std["PTB-L"], ptb_range["PTB-L"])
+)
+
+# Display the results
+print(variability_stats)
+```
+\pagebreak 
+
+# Effect Size Calculation: Yangsheng Xu	
+
+```{r}
+t_test_MRD1_R <- t.test(data$`MRD1- R Avg (E)`, data$`MRD1- R Avg (S)`, paired = TRUE) 
+t_test_MRD1_L <- t.test(data$`MRD1- L Avg (E)`, data$`MRD1- L Avg (S)`, paired = TRUE) 
+t_test_PTB_R <- t.test(data$`PTB R (E) Avg`, data$`PTB R (S) Avg`, paired = TRUE) 
+t_test_PTB_L <- t.test(data$`PTB L (E) Avg`, data$`PTB L (S) Avg`, paired = TRUE) 
+
+#install.packages("effectsize")
+library(effectsize)
+
+effect_size_MRD1_R <- cohens_d(data$`MRD1- R Avg (E)`, data$`MRD1- R Avg (S)`, paired = TRUE)
+effect_size_MRD1_L <- cohens_d(data$`MRD1- L Avg (E)`, data$`MRD1- L Avg (S)`, paired = TRUE)
+effect_size_PTB_R <- cohens_d(data$`PTB R (E) Avg`, data$`PTB R (S) Avg`, paired = TRUE)
+effect_size_PTB_L <- cohens_d(data$`PTB L (E) Avg`, data$`PTB L (S) Avg`, paired = TRUE)
+
+print(effect_size_MRD1_R)
+print(effect_size_MRD1_L)
+print(effect_size_PTB_R)
+print(effect_size_PTB_L)
+```
+
