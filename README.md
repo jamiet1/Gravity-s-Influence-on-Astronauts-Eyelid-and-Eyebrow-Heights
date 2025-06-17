@@ -30,7 +30,7 @@ This dataset can be found here: https://ucla.app.box.com/s/sn7lystvokoqllft2mk55
 
 ## Methods
 - **Data Cleaning**:
-  - Used a cleaneddataset with splitted names and dates, and no NA value, ensuring consistency in column names.
+  - Used a cleaned dataset with splitted names and dates, and no NA value, ensuring consistency in column names.
 - **Statistical Analysis**:
   - Paired t-tests for comparing mean measurements.
   - Correlation analysis for eyelid and eyebrow changes.
